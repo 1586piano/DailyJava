@@ -1,8 +1,7 @@
-package me.suhyuk.junit.member;
+package song.junit.study.member;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

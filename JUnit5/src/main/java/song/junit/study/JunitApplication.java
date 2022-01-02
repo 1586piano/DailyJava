@@ -1,4 +1,4 @@
-package me.suhyuk.junit;
+package song.junit.study;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

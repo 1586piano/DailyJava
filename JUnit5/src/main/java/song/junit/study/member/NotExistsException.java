@@ -1,4 +1,4 @@
-package me.suhyuk.junit.member;
+package song.junit.study.member;
 
 public class NotExistsException extends Throwable {
     public NotExistsException(String message) {

@@ -1,9 +1,9 @@
-package me.suhyuk.junit.member;
+package song.junit.study.member;
 
-import me.suhyuk.junit.domain.Member;
-import me.suhyuk.junit.post.IPostService;
-import me.suhyuk.junit.post.PostRepository;
-import me.suhyuk.junit.post.PostService;
+import song.junit.study.domain.Member;
+import song.junit.study.post.IPostService;
+import song.junit.study.post.PostRepository;
+import song.junit.study.post.PostService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

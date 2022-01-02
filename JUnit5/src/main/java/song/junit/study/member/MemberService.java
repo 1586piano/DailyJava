@@ -1,6 +1,6 @@
-package me.suhyuk.junit.member;
+package song.junit.study.member;
 
-import me.suhyuk.junit.domain.Member;
+import song.junit.study.domain.Member;
 
 import java.util.Optional;
 

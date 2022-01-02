@@ -1,7 +1,7 @@
-package me.suhyuk.junit.post;
+package song.junit.study.post;
 
-import me.suhyuk.junit.domain.Post;
-import me.suhyuk.junit.member.NotExistsException;
+import song.junit.study.domain.Post;
+import song.junit.study.member.NotExistsException;
 
 public interface IPostService {
     Post createNewPost(Long memberId, Post post) throws NotExistsException;

@@ -1,4 +1,4 @@
-package me.suhyuk.junit.domain;
+package song.junit.study.domain;
 
 import lombok.Builder;
 import lombok.Getter;

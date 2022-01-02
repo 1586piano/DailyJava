@@ -1,10 +1,9 @@
-package me.suhyuk.junit.post;
+package song.junit.study.post;
 
-import lombok.AllArgsConstructor;
-import me.suhyuk.junit.domain.Member;
-import me.suhyuk.junit.domain.Post;
-import me.suhyuk.junit.member.MemberService;
-import me.suhyuk.junit.member.NotExistsException;
+import song.junit.study.domain.Member;
+import song.junit.study.domain.Post;
+import song.junit.study.member.MemberService;
+import song.junit.study.member.NotExistsException;
 
 public class PostService implements IPostService {
     private MemberService memberService;

@@ -1,6 +1,6 @@
-package me.suhyuk.junit.post;
+package song.junit.study.post;
 
-import me.suhyuk.junit.domain.Post;
+import song.junit.study.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, Long> {

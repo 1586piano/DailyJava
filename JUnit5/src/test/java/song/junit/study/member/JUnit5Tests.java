@@ -1,21 +1,24 @@
-package me.suhyuk.junit.member;
+package song.junit.study.member;
 
-import me.suhyuk.junit.domain.Member;
-import me.suhyuk.junit.domain.Post;
-import me.suhyuk.junit.domain.PostStatus;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import song.junit.study.domain.Member;
+import song.junit.study.domain.Post;
+import song.junit.study.domain.PostStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.io.IOException;
 import java.time.Duration;
+import java.util.Map;
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 class JUnit5Tests {
@@ -86,23 +89,28 @@ class JUnit5Tests {
 
         // Assert
         // TODO : postBuilder.build() 함수 호출을 하고, IllegalArgumentException 예외를 검증하세요
-
         assertThrows(IllegalArgumentException.class, ()->{
-            postBuilder.build();
+            postBuilder.build(); //IllegalArgumentException !!
         });
-//        assertThrows(IllegalArgumentException.class, ()-> {
-//            newPost.getPostStatus();
-//        });
+
+        // Expected :java.lang.ArrayIndexOutOfBoundsException
+        // Actual   :java.lang.IllegalArgumentException
+        assertThrows(ArrayIndexOutOfBoundsException.class, ()->{
+            postBuilder.build(); //IllegalArgumentException !!
+        });
     }
 
     @Test
     @DisplayName("assetTimeout 테스트")
-    void testAssertTimeout() {
+    void testAssertTimeout() throws InterruptedException {
         // Execute
         Post post = Post.builder().id(1L).build();
 
         // Assert
         // TODO : post.sleep(5000) 메소드 호출을 통해 5초 sleep 시에 1초 타임아웃 검증을 수행하세요
+        assertTimeout(Duration.ofMillis(5000), ()->{
+            post.sleep(5000);
+        });
     }
 
     @Test
@@ -113,36 +121,61 @@ class JUnit5Tests {
 
         // Assert
         // TODO : post.sleep(5000) 메소드 호출을 통해 5초 sleep 하되, 1초 타임아웃 즉시 바로 종료되도록 검증하세요
+        assertTimeoutPreemptively(Duration.ofMillis(1000), ()->{
+            post.sleep(5000);
+        });
+
     }
 
     @Test
     @DisplayName("org.assertj.core.api.AssertionsForInterfaceTypes.assertThat 테스트")
     void testAssertMatcher() {
         // Execute
-        Post post = Post.builder().id(1L).title("제목").build();
+        Post post1 = Post.builder().id(1L).title("제목").build();
+        Post post2 = Post.builder().id(1L).title("제").build();
 
         // Assert
         // TODO : Post 객체의 제목의 문자열의 수가 1보다 큰 것을 검증하세요
+        //org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
+        //assertThat(post.getTitle().length()).isGreaterThan(1);
+        assertAll(
+                () -> assertThat(post2.getTitle().length(), greaterThan(1)),
+                () -> assertThat(post1.getTitle().length(), greaterThan(1))
+        );
     }
 
     @Test
     @DisplayName("assumeTrue 조건에 따른 테스트")
-    void testAssumeTrue() {
+    void testAssumeTrue() throws IOException {
         // Execute
         String debug = System.getenv("DEBUG");
 
         // Assert
         // TODO : 환경변수 DEBUG=true 값을 지정하고, 해당 값이 true 인 경우에만 build() 함수가 호출되도록 작성하세요
+        // Run-Edit configuration-Environment variables
+        assumeTrue("true".equalsIgnoreCase(debug)); // 환경변수 debug true?
+
+        //true..
         Post.builder().build(); // throw illegal-argument-exception
     }
 
     @Test
     @Tag("fast")
-    @DisplayName("@Tag('fast') 조건에 따른 테스트")
+    @DisplayName("@Tag('fast') 조건에 따른 테스트1")
     void testTagFast() throws InterruptedException {
         Post fastPost = Post.builder().id(1L).build();
         assertTimeout(Duration.ofMillis(50), () -> fastPost.sleep(10));
-        // TODO : 터미널에서 fast tag 작업만 수행하고, 소요되는 시간을 작성하세요
+        // TODO : 터미널에서 fast tag 작업만 수행하고, 소요되는 시간을 작성하세요 : 22s
+        // gradlew fast
+    }
+
+    @Test
+    @Tag("fast")
+    @DisplayName("@Tag('fast') 조건에 따른 테스트2")
+    void testTagFast2() throws InterruptedException {
+        Post fastPost = Post.builder().id(1L).build();
+        assertTimeout(Duration.ofMillis(50), () -> fastPost.sleep(10));
+        // TODO : 터미널에서 fast tag 작업만 수행하고, 소요되는 시간을 작성하세요 : 22s
     }
 
     @Test
@@ -151,7 +184,7 @@ class JUnit5Tests {
     void testTagSlow() throws InterruptedException {
         Post slowPost = Post.builder().id(1L).build();
         assertTimeout(Duration.ofMillis(10000), () -> slowPost.sleep(5000));
-        // TODO : 터미널에서 slow tag 작업만 수행하고, 소요되는 시간을 작성하세요
+        // TODO : 터미널에서 slow tag 작업만 수행하고, 소요되는 시간을 작성하세요 : 15s
     }
 
     @FastTest
@@ -159,24 +192,36 @@ class JUnit5Tests {
     void testFastTag() {
         Post fastPost = Post.builder().id(1L).build();
         assertTimeout(Duration.ofMillis(50), () -> fastPost.sleep(10));
-        // TODO : SlowTest 커스텀 어노테이션 태그를 작성하고, 5초 소요되는 단위 테스트 test5Seconds 함수를 작성하세요
+        // TODO : SlowTest 커스텀 어노테이션 태그를 작성하고, 5초 소요되는 단위 테스트 test5Seconds 함수를 작성하세요 : 5s
+    }
+
+    @SlowTest
+    @DisplayName("커스텀 어노테이션 태그를 통한 테스트")
+    void testSlowTag() {
+        Post slowPost = Post.builder().id(1L).build();
+        assertTimeout(Duration.ofMillis(50), () -> slowPost.sleep(5));
     }
 
     // TODO : testParameterizedTest 검증이 성공하도록 값을 넣어주는 어노테이션을 활용하여 적절한 문자열 3개 이상을 작성하세요
     @ParameterizedTest
+    @ValueSource(strings = {
+            "aaaaaa",
+            "bbbbbb",
+            "cccccc"
+    })
     @DisplayName("Parameterized 테스트")
     void testParameterizedTest(String word) {
-        assertThat(word.length() > 5);
+        assertThat(word.length(), greaterThan(5));
     }
 
     // TODO : 아래의 함수가 정상적으로 동작하도록 수정하세요
     @ParameterizedTest
     @DisplayName("다수의 파라메터와 인자를 가진 테스트")
-    @CsvSource(value = {"1:'박수혁':CREATED", "2:'박송희':UPDATED", "3:'백건호':DELETED"})
-    void testMultipleParameterized(Long id, PostStatus postStatus, String name) {
+    @CsvSource(value = {"1,'박수혁',CREATED", "2,'박송희',UPDATED", "3,'백건호',DELETED"})
+    void testMultipleParameterized(Long id, String name, PostStatus postStatus) {
         Member member = Member.builder().id(id).name(name).build();
         assertNotNull(member);
-        assertThat(member.getName().length()).isGreaterThan(1);
+        //assertThat(member.getName().length()).isGreaterThan(1);
         Post post = Post.builder().postStatus(postStatus).id(id).build();
         assertNotNull(post);
     }
@@ -185,6 +230,7 @@ class JUnit5Tests {
     @ParameterizedTest
     @DisplayName("널과 빈값 인자 테스트")
     @ValueSource(strings = {"박수혁", "박송희", "백건호"})
+    @NullAndEmptySource
     void testNullAndEmptySource(String name) {
         System.out.println(String.format("[%s]", name));
     }

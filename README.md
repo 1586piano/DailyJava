@@ -33,3 +33,18 @@ createFrenchFries();
 햄버거 가게 <- 롯데리아 extends 햄버거가게
 햄버거 가게 <- 맥도날드 extends 햄버거가게
 햄버거 가게 <- 버거킹 extends 햄버거가게
+
+
+
+### IP(Internet Protocol)
+- 낮은 신뢰도 : 목적지 IP 서버 상태가 어떻든 일단 보냄. 유실 가능성 존재
+- 데이터 전송 순서를 보장하지 않음
+### TCP(Transmission Control Protocol)
+- 3way handshake -  -> syn(접속요청)   <- syn+ack(요청 수락)  한 다음에 -> ack 과 함께 데이터 전송
+- 데이터 전달 보증
+- 순서 보장
+### UDP(User Datagram Protocol)
+- TCP가 보장하는 것 모두 보장하지 않음
+- PORT : 내 PC에는 하나의 IP. 여러 애플리케이션이 띄워져 있는 경우, 어떻게 구분할 것인가? -> 같은 IP내 프로세스를 포트를 통해 구분한다. (0~1023 까지는 많이 알려진 포트이므로, 개인적으로는 다른 포트를 쓸 것)
+- CheckSum(중복 검사)
+- TCP는 handshake하느냐고 느려지고, 데이터도 이것 저것 담아보내느냐고 최적화가 어렵다. 요새는 UDP를 많이 사용한다.
